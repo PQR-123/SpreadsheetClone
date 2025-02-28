@@ -1,9 +1,9 @@
 import type { Express } from "express";
-import { createServer } from "http";
+import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { SheetDataSchema, insertSheetSchema } from "@shared/schema";
 
-export async function registerRoutes(app: Express) {
+export async function registerRoutes(app: Express): Promise<Server> {
   const httpServer = createServer(app);
 
   app.post("/api/sheets", async (req, res) => {
@@ -19,12 +19,12 @@ export async function registerRoutes(app: Express) {
   app.get("/api/sheets/:id", async (req, res) => {
     const id = parseInt(req.params.id);
     const sheet = await storage.getSheet(id);
-    
+
     if (!sheet) {
       res.status(404).json({ error: "Sheet not found" });
       return;
     }
-    
+
     res.json(sheet);
   });
 
